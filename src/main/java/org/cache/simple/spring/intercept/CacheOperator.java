@@ -1,8 +1,6 @@
 package org.cache.simple.spring.intercept;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 import javax.annotation.Resource;
 
@@ -11,7 +9,6 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.cache.simple.annotation.CacheRemove;
 import org.cache.simple.annotation.Cacheable;
 import org.cache.simple.invoker.CacheJob;
-import org.cache.simple.utils.ArgUtil;
 import org.cache.simple.utils.ExpressionUtil;
 import org.cache.simple.worker.CacheWorker;
 import org.slf4j.Logger;

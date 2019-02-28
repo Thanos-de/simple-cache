@@ -22,7 +22,7 @@ public class CacheWorker {
 
 	private static final Logger log = LoggerFactory.getLogger(CacheWorker.class);
 
-	private static ThreadLocal<Boolean> saveStatus = new ThreadLocal<Boolean>();
+	
 	@Autowired
 	private CacheInvoker cacheInvoker;
 	@Autowired(required = false)
@@ -48,13 +48,6 @@ public class CacheWorker {
 	}
 
 
-	/**
-	 * @Title: SaveStatus 是否加缓存（ 默认规则为 结果不为空）这个方法一定要在CacheJob.invoke()方法中运行
-	 * @param isSave
-	 */
-	public static void SaveStatus(boolean isSave) {
-		saveStatus.set(isSave);
-	}
 
 	public <T> T invoke(String prefixBizKey, String key, Class<?> returnType, CacheJob<T> job) throws Throwable {
 		Long startTime = System.currentTimeMillis();
@@ -79,7 +72,6 @@ public class CacheWorker {
 			if (endTimeDec >= 800) {
 				log.info("Task for prefixBizKey:" + prefixBizKey + ",key:" + key + " run for [" + endTimeDec + " ms]");
 			}
-			saveStatus.remove();
 		}
 
 	}
@@ -111,24 +103,12 @@ public class CacheWorker {
 		return target.getName() + ":" + methodName + ":" + HashUtil.hash(keys, keysCount);
 	}
 
-	public static String getPreKey(String keys, String... key) {
 
-		return (String) getClassAndMethodInfo(4).getClassName() + ":"
-				+ (String) getClassAndMethodInfo(4).getMethodName() + ":" + HashUtil.hash(keys, keysCount);
-	}
-
-
-	public static void main(String[] args) {
-		for (int i = 0; i < 10; i++) {
-			System.out.println(HashUtil.hash("110108199303161526", keysCount));
-			;
-		}
-	}
 
 	private static Boolean isSave(Object obj) {
-		Boolean status = saveStatus.get();
+		Boolean status = GlobleContext.getAllowCacheStatus();
 		if (status == null) {
-			// defalt
+			// defaltCondition
 			if (obj != null) {
 				if (obj instanceof List && ((List) obj).isEmpty()) {
 					return false;
@@ -142,17 +122,9 @@ public class CacheWorker {
 	}
 
 	// 2的10次
+	@Autowired(required = false)
 	private static int keysCount = 1024;
 
-	/**
-	 * @Title: getClassAndMethodName 获取调用函数名和类名
-	 * @return
-	 */
-	private static StackTraceElement getClassAndMethodInfo(Integer i) {
-
-		StackTraceElement[] stes = Thread.currentThread().getStackTrace();
-		return stes[i];
-	}
 
 	public Serializer getSerializer() {
 		return serializer;
