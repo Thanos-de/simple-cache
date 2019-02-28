@@ -1,17 +1,14 @@
 package org.cache.simple.worker;
 
 import java.util.List;
-import java.util.zip.CRC32;
 
-import javax.xml.bind.annotation.XmlElementDecl.GLOBAL;
-
+import org.cache.consts.NullConst;
 import org.cache.globle.GlobleContext;
 import org.cache.simple.invoker.CacheInvoker;
 import org.cache.simple.invoker.CacheJob;
 import org.cache.simple.serializer.HessianSerializer;
 import org.cache.simple.serializer.Serializer;
 import org.cache.simple.utils.HashUtil;
-import org.cache.simple.utils.NullConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +95,8 @@ public class CacheWorker {
 	public void addToCache(String prefixBizKey, String key, Object value) throws Exception {
 		log.info("[Save] Cache by [prefixBizKey:" + prefixBizKey + ",key:" + key + "]");
 		if (value == null) {
-			getCache().put(prefixBizKey, key, serializer.serialize(NullConst.nullByte));
+			getCache().put(prefixBizKey, key, NullConst.nullByte);
+			return;
 		}
 		getCache().put(prefixBizKey, key, serializer.serialize(value));
 	}
