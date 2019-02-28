@@ -1,4 +1,4 @@
-package org.cache.consts;
+package org.cache.simple.consts;
 
 import java.util.Arrays;
 

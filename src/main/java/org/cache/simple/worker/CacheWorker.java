@@ -2,8 +2,8 @@ package org.cache.simple.worker;
 
 import java.util.List;
 
-import org.cache.consts.NullConst;
-import org.cache.globle.GlobleContext;
+import org.cache.simple.consts.NullConst;
+import org.cache.simple.globle.GlobleContext;
 import org.cache.simple.invoker.CacheInvoker;
 import org.cache.simple.invoker.CacheJob;
 import org.cache.simple.serializer.HessianSerializer;

@@ -1,4 +1,4 @@
-package org.cache.excetion;
+package org.cache.simple.excetion;
 
 public class ExpressionException extends RuntimeException {
 	

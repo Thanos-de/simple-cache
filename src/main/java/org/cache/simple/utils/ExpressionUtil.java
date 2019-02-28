@@ -3,7 +3,7 @@ package org.cache.simple.utils;
 import java.lang.reflect.Method;
 import java.util.regex.Pattern;
 
-import org.cache.excetion.ParamException;
+import org.cache.simple.excetion.ParamException;
 
 import com.alibaba.fastjson.JSON;
 
