@@ -13,7 +13,6 @@ import org.cache.simple.utils.ExpressionUtil;
 import org.cache.simple.worker.CacheWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author zhaode
@@ -84,7 +83,7 @@ public class CacheOperator implements MethodInterceptor {
 
 		Class<?> returnType = method.getReturnType();
 
-		return cacheWorker.invoke(CacheWorker.getPreKey(methodInvocation.getThis().getClass(), method.getName(), key),
+		return cacheWorker.invoke(cacheWorker.getPreKey(methodInvocation.getThis().getClass(), method.getName(), key),
 				key, returnType, new CacheJob<Object>() {
 					@Override
 					public Object invoke() throws Throwable {

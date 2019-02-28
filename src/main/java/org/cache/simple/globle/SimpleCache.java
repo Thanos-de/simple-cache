@@ -47,7 +47,7 @@ public class SimpleCache {
 		try {
 			String key = ExpressionUtil.getKeyByExpressionAndParams(methodParams, expressoion);
 			CacheWorker cw = GlobleContext.getCacheWorker();
-			cw.addToCache(CacheWorker.getPreKey(targetClass, methodName, key), key, value);
+			cw.addToCache(cw.getPreKey(targetClass, methodName, key), key, value);
 		} catch (Exception e) {
 			log.warn("delete cache error", e);
 			return false;
@@ -60,7 +60,7 @@ public class SimpleCache {
 	 *
 	 * @param condition
 	 */
-	public void cacheCondition(Boolean condition) {
+	public static void cacheCondition(Boolean condition) {
 		GlobleContext.setAllowCacheStatus(condition);
 	}
 }

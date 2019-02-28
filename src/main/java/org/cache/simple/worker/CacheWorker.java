@@ -3,6 +3,7 @@ package org.cache.simple.worker;
 import java.util.List;
 
 import org.cache.simple.consts.NullConst;
+import org.cache.simple.excutor.CacheExecutor;
 import org.cache.simple.globle.GlobleContext;
 import org.cache.simple.invoker.CacheInvoker;
 import org.cache.simple.invoker.CacheJob;
@@ -22,7 +23,6 @@ public class CacheWorker {
 
 	private static final Logger log = LoggerFactory.getLogger(CacheWorker.class);
 
-	
 	@Autowired
 	private CacheInvoker cacheInvoker;
 	@Autowired(required = false)
@@ -32,7 +32,6 @@ public class CacheWorker {
 		super();
 		GlobleContext.setCacheWorker(this);
 	}
-
 
 	/**
 	 * @Title: deleteByClassAndMethodName
@@ -47,25 +46,20 @@ public class CacheWorker {
 		return getCache().delete(prekey, key);
 	}
 
-
-
 	public <T> T invoke(String prefixBizKey, String key, Class<?> returnType, CacheJob<T> job) throws Throwable {
 		Long startTime = System.currentTimeMillis();
 		try {
 			T result = null;
 			byte[] obj = invokeByCache(prefixBizKey, key);
+
 			if (obj != null) {
 				log.info("[Hit] By Cache For [prefixBizKey:" + prefixBizKey + ",key:" + key + "]");
-				if (NullConst.AssertNull(obj)) {
-					return null;
-				}
-				result = (T) serializer.deserialize(obj, returnType);
-				return result;
+				return (T) handlerCacheResult(obj, returnType);
 			}
+
 			result = (T) invokeSelf(job);
-			if (isSave(result)) {
-				addToCache(prefixBizKey, key, result);
-			}
+
+			addToCache(prefixBizKey, key, result);
 			return result;
 		} finally {
 			Long endTimeDec = System.currentTimeMillis() - startTime;
@@ -84,26 +78,47 @@ public class CacheWorker {
 		return getCache().get(prefixBizKey, key);
 	}
 
-	public void addToCache(String prefixBizKey, String key, Object value) throws Exception {
-		log.info("[Save] Cache by [prefixBizKey:" + prefixBizKey + ",key:" + key + "]");
-		if (value == null) {
-			getCache().put(prefixBizKey, key, NullConst.nullByte);
-			return;
+	public void addToCache(final String prefixBizKey, final String key, Object value) throws Exception {
+		if (isSave(value)) {
+			log.info("[Save] Cache by [prefixBizKey:" + prefixBizKey + ",key:" + key + "]");
+			final byte[] bv;
+			if (value == null) {
+				bv = NullConst.nullByte;
+			} else {
+				bv = serializer.serialize(value);
+			}
+			CacheExecutor.commit(new Runnable() {
+
+				@Override
+				public void run() {
+					try {
+						getCache().put(prefixBizKey, key, bv);
+						log.info("[Asyn Save success] Cache by [prefixBizKey:" + prefixBizKey + ",key:" + key + "]");
+					} catch (Exception e) {
+						log.error("[Asyn Save error] Cache by [prefixBizKey:" + prefixBizKey + ",key:" + key + "]");
+					}
+				}
+			});
+
 		}
-		getCache().put(prefixBizKey, key, serializer.serialize(value));
 	}
 
 	private CacheInvoker getCache() {
 		return cacheInvoker;
 	};
 
-
-	public static String getPreKey(Class<?> target, String methodName, String keys) {
+	public  String getPreKey(Class<?> target, String methodName, String keys) {
 
 		return target.getName() + ":" + methodName + ":" + HashUtil.hash(keys, keysCount);
 	}
 
-
+	private Object handlerCacheResult(byte[] obj, Class<?> returnType) throws Exception {
+		if (NullConst.AssertNull(obj)) {
+			return null;
+		} else {
+			return serializer.deserialize(obj, returnType);
+		}
+	}
 
 	private static Boolean isSave(Object obj) {
 		Boolean status = GlobleContext.getAllowCacheStatus();
@@ -123,8 +138,7 @@ public class CacheWorker {
 
 	// 2的10次
 	@Autowired(required = false)
-	private static int keysCount = 1024;
-
+	private int keysCount = 1024;
 
 	public Serializer getSerializer() {
 		return serializer;
@@ -134,12 +148,12 @@ public class CacheWorker {
 		this.serializer = serializer;
 	}
 
-	public static int getKeysCount() {
+	public int getKeysCount() {
 		return keysCount;
 	}
 
-	public static void setKeysCount(int keysCount) {
-		CacheWorker.keysCount = keysCount;
+	public void setKeysCount(int keysCount) {
+		this.keysCount = keysCount;
 	}
 
 }
