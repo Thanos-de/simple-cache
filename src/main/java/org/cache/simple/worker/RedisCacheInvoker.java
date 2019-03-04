@@ -1,8 +1,6 @@
 package org.cache.simple.worker;
 
 import org.cache.simple.invoker.CacheInvoker;
-import org.cache.simple.serializer.HessianSerializer;
-import org.cache.simple.serializer.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
