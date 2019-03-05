@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<xsd:schema
+	xmlns="http://www.simple.org/schema/cache"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:tool="http://www.springframework.org/schema/tool"
+	targetNamespace="http://www.simple.org/schema/cache"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:import
+		namespace="http://www.springframework.org/schema/beans" />
+	<xsd:import
+		namespace="http://www.springframework.org/schema/tool" />
+
+
+	<xsd:element name="cache">
+		<xsd:complexType>
+					
+					<xsd:attribute name="id" type="xsd:string" use="optional" default="simpleCache">
+						<xsd:annotation>
+							<xsd:documentation>cacheInvoker</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					
+					<xsd:attribute name="cacheInvoker" type="xsd:string" use="required">
+						<xsd:annotation>
+							<xsd:documentation>cacheInvoker</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+
+					<xsd:attribute name="serializer" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>序列化对象</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

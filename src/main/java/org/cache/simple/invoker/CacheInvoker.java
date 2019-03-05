@@ -6,12 +6,12 @@ package org.cache.simple.invoker;
  * 
  */
 public interface CacheInvoker {
-	
-	Long put(String prefixBizKey,String key, byte[] value);
 
-	Long delete(String prefixBizKey,String... key);
-	
+	Long put(String prefixBizKey, String key, byte[] value);
+
+	Long delete(String prefixBizKey, String key);
+
 	Long delete(String prefixBizKey);
-	
-	byte[]  get(String prefixBizKey,String key);
+
+	byte[] get(String prefixBizKey, String key);
 }

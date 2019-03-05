@@ -156,4 +156,13 @@ public class CacheWorker {
 		this.keysCount = keysCount;
 	}
 
+	public CacheInvoker getCacheInvoker() {
+		return cacheInvoker;
+	}
+
+	public void setCacheInvoker(CacheInvoker cacheInvoker) {
+		this.cacheInvoker = cacheInvoker;
+	}
+	
+
 }

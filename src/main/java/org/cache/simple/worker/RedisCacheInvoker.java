@@ -13,11 +13,11 @@ import redis.clients.jedis.Jedis;
  */
 public abstract class RedisCacheInvoker implements CacheInvoker {
 	private static final Logger log = LoggerFactory.getLogger(RedisCacheInvoker.class);
-	
-	
+
 	public static void main(String[] args) {
-		
+
 	}
+
 	/*
 	 * @see com.yongche.merchant.utils.cache.CacheInvoker#put(java.lang.String,
 	 * java.lang.String, java.lang.Object)
@@ -32,7 +32,7 @@ public abstract class RedisCacheInvoker implements CacheInvoker {
 			if (value != null) {
 				jedis.hsetnx(prefixBizKey.getBytes(), key.getBytes(), value);
 			}
-			//jedis.expire(prefixBizKey, 3600);
+			// jedis.expire(prefixBizKey, 3600);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -47,12 +47,11 @@ public abstract class RedisCacheInvoker implements CacheInvoker {
 	}
 
 	/*
-	 * @see
-	 * com.yongche.merchant.utils.cache.CacheInvoker#delete(java.lang.String,
+	 * @see com.yongche.merchant.utils.cache.CacheInvoker#delete(java.lang.String,
 	 * java.lang.String)
 	 */
 	@Override
-	public Long delete(String prefixBizKey, String... key) {
+	public Long delete(String prefixBizKey, String key) {
 		if (prefixBizKey != null && key != null) {
 
 			Jedis jedis = null;
@@ -73,8 +72,7 @@ public abstract class RedisCacheInvoker implements CacheInvoker {
 	}
 
 	/*
-	 * @see
-	 * com.yongche.merchant.utils.cache.CacheInvoker#delete(java.lang.String)
+	 * @see com.yongche.merchant.utils.cache.CacheInvoker#delete(java.lang.String)
 	 */
 	@Override
 	public Long delete(String prefixBizKey) {
@@ -119,6 +117,7 @@ public abstract class RedisCacheInvoker implements CacheInvoker {
 //		log.debug("[GET]byRedisCache...:" + "Result:" + obj);
 		return data;
 	}
+
 	public abstract Jedis getJedis(String prefixBizKey);
 
 }

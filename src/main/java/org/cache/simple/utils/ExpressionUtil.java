@@ -17,7 +17,6 @@ public class ExpressionUtil {
 
 		for (String ex : exs) {
 			String[] md = ex.split("\\.");
-			System.out.println(md.length);
 			if (!isInteger(md[0])) {
 				throw new ParamException("your expression is error,that like \" expressoion = 1.name,2.id,1... \"!");
 			}
