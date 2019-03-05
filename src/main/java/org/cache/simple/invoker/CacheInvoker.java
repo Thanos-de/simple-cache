@@ -7,11 +7,11 @@ package org.cache.simple.invoker;
  */
 public interface CacheInvoker {
 
-	Long put(String prefixBizKey, String key, byte[] value);
+	boolean put(String prefixBizKey, String key, byte[] value);
 
-	Long delete(String prefixBizKey, String key);
+	boolean delete(String prefixBizKey, String key);
 
-	Long delete(String prefixBizKey);
+	boolean delete(String prefixBizKey);
 
 	byte[] get(String prefixBizKey, String key);
 }

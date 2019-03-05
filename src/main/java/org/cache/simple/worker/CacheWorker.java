@@ -40,7 +40,7 @@ public class CacheWorker {
 	 * @param key        方法参数
 	 * @return
 	 */
-	public Long deleteByClassAndMethodName(Class<?> target, String methodName, String key) {
+	public boolean deleteByClassAndMethodName(Class<?> target, String methodName, String key) {
 		String prekey = getPreKey(target, methodName, key);
 		log.info("[Clear] Cache For [prefixBizKey:" + prekey + ",And Keys:" + key + "]");
 		return getCache().delete(prekey, key);
@@ -92,9 +92,13 @@ public class CacheWorker {
 				@Override
 				public void run() {
 					try {
-						getCache().put(prefixBizKey, key, bv);
-						log.info("[Asyn Save success] Cache by [prefixBizKey:" + prefixBizKey + ",key:" + key + "]");
+						if (getCache().put(prefixBizKey, key, bv)) {
+							log.info("[Asyn Save success] Cache by [prefixBizKey:" + prefixBizKey + ",key:" + key + "]");
+						}else {
+							log.error("[Asyn Save error] Cache by [prefixBizKey:" + prefixBizKey + ",key:" + key + "]");
+						}
 					} catch (Exception e) {
+						e.printStackTrace();
 						log.error("[Asyn Save error] Cache by [prefixBizKey:" + prefixBizKey + ",key:" + key + "]");
 					}
 				}

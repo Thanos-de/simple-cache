@@ -18,89 +18,68 @@ public abstract class RedisCacheInvoker implements CacheInvoker {
 
 	}
 
-	/*
-	 * @see com.yongche.merchant.utils.cache.CacheInvoker#put(java.lang.String,
-	 * java.lang.String, java.lang.Object)
-	 */
 	@Override
-	public Long put(String prefixBizKey, String key, byte[] value) {
-		// TODO Auto-generated method stub
+	public boolean put(String prefixBizKey, String key, byte[] value) {
 		Jedis jedis = null;
 		try {
 			jedis = getJedis(prefixBizKey);
-			Long result = 0L;
 			if (value != null) {
 				jedis.hsetnx(prefixBizKey.getBytes(), key.getBytes(), value);
 			}
-			// jedis.expire(prefixBizKey, 3600);
-			return result;
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			// TODO: handle exception
 		} finally {
 			if (jedis != null) {
 				jedis.close();
 			}
 		}
-		return null;
+		return false;
 
 	}
 
-	/*
-	 * @see com.yongche.merchant.utils.cache.CacheInvoker#delete(java.lang.String,
-	 * java.lang.String)
-	 */
 	@Override
-	public Long delete(String prefixBizKey, String key) {
+	public boolean delete(String prefixBizKey, String key) {
 		if (prefixBizKey != null && key != null) {
 
 			Jedis jedis = null;
 			try {
 				jedis = getJedis(prefixBizKey);
-				return jedis.hdel(prefixBizKey, key);
+				jedis.hdel(prefixBizKey, key);
+				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
-				// TODO: handle exception
 			} finally {
 				if (jedis != null) {
 					jedis.close();
 				}
 			}
 		}
-		return null;
+		return false;
 
 	}
 
-	/*
-	 * @see com.yongche.merchant.utils.cache.CacheInvoker#delete(java.lang.String)
-	 */
 	@Override
-	public Long delete(String prefixBizKey) {
-		// TODO Auto-generated method stub
+	public boolean delete(String prefixBizKey) {
 		if (prefixBizKey != null) {
 
 			Jedis jedis = null;
 			try {
 				jedis = getJedis(prefixBizKey);
-				return jedis.del(prefixBizKey);
+				jedis.del(prefixBizKey);
+				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
-				// TODO: handle exception
 			} finally {
 				if (jedis != null) {
 					jedis.close();
 				}
 			}
 		}
-		return null;
+		return false;
 	}
 
-	/*
-	 * @see com.yongche.merchant.utils.cache.CacheInvoker#get(java.lang.String,
-	 * java.lang.String)
-	 */
 	public byte[] get(String prefixBizKey, String key) {
-		// TODO Auto-generated method stub
 		Jedis jedis = null;
 		byte[] data = null;
 		try {
@@ -108,13 +87,11 @@ public abstract class RedisCacheInvoker implements CacheInvoker {
 			data = jedis.hget(prefixBizKey.getBytes(), key.getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
-			// TODO: handle exception
 		} finally {
 			if (jedis != null) {
 				jedis.close();
 			}
 		}
-//		log.debug("[GET]byRedisCache...:" + "Result:" + obj);
 		return data;
 	}
 
